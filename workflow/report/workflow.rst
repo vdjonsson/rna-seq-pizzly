@@ -1,0 +1,5 @@
+Fusion junctions are detected per sample using two-stage method: 
+Potential fusion junctions were found using `kallisto <https://pachterlab.github.io/kallisto/>`_ quant fusion mode, then filtered by `pizzly <https://github.com/pmelsted/pizzly>`_ based on genome annotation to generate a FASTA file of fusion transcripts. 
+The union set of fusion transcripts from multiple samples are further filtered to reduce biological redundancy. For repeated fusion sequences that come from different transcript pairs but the same gene pair, only first occurring transcript pair is kept, as downstream analysis focuses on gene-level changes and each unique transcript should be defined once. A transcript pair to gene pair mapping is generated simultaneously to be used for downstream analysis. 
+After adding the combined set of filtered fusions to the original transcriptome reference to build a new kallisto index, transcripta dn fusion abundance is re-quantified per sample using kallisto. A sample sheet is generated for downstream sleuth analysis. 
+For sample metadata, see {{ snakemake.config["samples"] }}_.

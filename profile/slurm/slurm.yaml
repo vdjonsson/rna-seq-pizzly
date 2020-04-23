@@ -1,0 +1,27 @@
+outdir: &root "slurm/"
+__default__:
+  output: !join [*root, "{rule}_%j.log"]
+
+
+kallisto_index:
+  output: !join [*root, "kallisto/quant/{params.reference}_index_%j.log"]
+  
+kallisto_quant:
+  output: !join [*root, "kallisto/quant/{wildcards.reference}_{wildcards.sample}_%j.log"]
+
+pizzly:
+  output: !join [*root, "pizzly/fusion/{wildcards.reference}_{wildcards.sample}_%j.log"]
+
+append_index:
+  partition: "all,fast"
+  output: !join [*root, "pizzly/merge/{wildcards.reference}_{wildcards.project}_reindex_%j.log"]
+
+kallisto_requant:
+  partition: "all,fast"
+  output: !join [*root, "kallisto/requant/{wildcards.reference}_{wildcards.project}_{wildcards.sample}_%j.log"]
+
+sleuth_init:
+  output: !join [*root, "sleuth/{wildcards.reference}_{wildcards.project}_{rule}_%j.log"]
+
+sleuth_diffexp:
+  output: !join [*root, "sleuth/{wildcards.reference}_{wildcards.project}_{rule}_%j.log"]

@@ -1,0 +1,52 @@
+
+### load config file and set working directory ###
+configfile: "config.yaml"
+
+include: "rules/common.smk" 
+include: "rules/quant.smk"
+include: "rules/pizzly.smk"
+include: "rules/merge.smk"
+include: "rules/requant.smk"
+include: "rules/sleuth.smk"
+
+# Allow users to fix the underlying OS via singularity.
+singularity: "docker://continuumio/miniconda3"
+
+# The first rule should define the default target files
+# Subsequent target rules can be specified below. They should start with all_*.
+rule all:
+    input:
+        # kallisto fusion output per sample
+        expand("results/quant/{reference}/{sample}/abundance.tsv", 
+        reference=REFERENCE, sample=samples['sample']),
+
+        # pizzly fusion fasta output per sample
+        expand([
+            "results/pizzly/{reference}/{sample}/output.fusions.fasta", 
+            "results/pizzly/{reference}/{sample}/genetable.tsv"], 
+            reference=REFERENCE, sample=samples['sample']),
+
+        # reference t2g
+        T2G,
+
+        # merged fusion fasta
+        expand([
+            "results/merge/{reference}/{project}/summary.txt",
+            "results/merge/{reference}/{project}/transcripts_with_fusions.idx",
+            "results/merge/{reference}/{project}/output.fusions.combined.unique.filtered.fasta",
+            "results/merge/{reference}/{project}/fusions_t2g.tsv", 
+            "results/merge/{reference}/{project}/combined_t2g.tsv"],
+            reference=REFERENCE, project=PROJECT),
+
+        # kallisto requant output per sample
+        expand("results/requant/{reference}/{sample}/{project}/abundance.tsv", 
+            reference=REFERENCE, sample=samples['sample'], project=PROJECT),
+
+        # sleuth set up
+        expand("results/sleuth/{reference}/{project}/samplesheet.tsv", 
+            reference=REFERENCE, project=PROJECT),
+        expand("results/sleuth/{reference}/{project}/h5_status.txt", 
+            reference=REFERENCE, project=PROJECT)
+
+        # expand("results/sleuth/{reference}/{project}/{model}.rds", 
+        #     reference=REFERENCE, project=PROJECT, model=config["sleuth"]["models"]),
