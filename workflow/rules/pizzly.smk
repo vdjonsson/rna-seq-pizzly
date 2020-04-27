@@ -2,12 +2,12 @@ localrules: flatten, parse_gtf
 
 rule pizzly:
     input:
-        "results/quant/{reference}/{sample}/fusion.txt"
+        "kallisto/quant/{reference}/{sample}/fusion.txt"
     output:
-        "results/pizzly/{reference}/{sample}/output.json",
-        "results/pizzly/{reference}/{sample}/output.fusions.fasta"
+        "pizzly/fusion/{reference}/{sample}/output.json",
+        "pizzly/fusion/{reference}/{sample}/output.fusions.fasta"
     log: 
-        "logs/pizzly/{reference}/{sample}.log"
+        "logs/pizzly/fusion/{reference}/{sample}.log"
     params:
         k=config['kallisto']['k'],
         insert_size=config['pizzly']['insert_size'],
@@ -30,9 +30,9 @@ rule pizzly:
     
 rule flatten:
     input:
-        "results/pizzly/{reference}/{sample}/output.json"
+        "pizzly/fusion/{reference}/{sample}/output.json"
     output:
-        "results/pizzly/{reference}/{sample}/genetable.tsv"
+        "pizzly/fusion/{reference}/{sample}/genetable.tsv"
     script:
         # from https://github.com/pmelsted/pizzly
         "../scripts/flatten.py"

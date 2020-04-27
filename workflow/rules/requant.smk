@@ -7,12 +7,12 @@ def unzip_fasta(fasta):
 rule append_index:
     input:
         FASTA,
-        "results/merge/{reference}/{project}/output.fusions.combined.unique.filtered.fasta"
+        "pizzly/merge/{reference}/{project}/output.fusions.combined.unique.filtered.fasta"
     output:
-        "results/merge/{reference}/{project}/transcripts_with_fusions.fasta.gz",
-        "results/merge/{reference}/{project}/transcripts_with_fusions.idx"
+        "pizzly/merge/{reference}/{project}/transcripts_with_fusions.fasta.gz",
+        "pizzly/merge/{reference}/{project}/transcripts_with_fusions.idx"
     log: 
-        "logs/merge/{reference}/reindex/{project}.log"
+        "logs/pizzly/merge/{reference}/{project}.log"
     resources:
         time=120, #minutes
         mem_mb=32000
@@ -27,20 +27,20 @@ rule append_index:
     
 rule kallisto_requant:
     input:
-        idx="results/merge/{reference}/{project}/transcripts_with_fusions.idx",
+        idx="pizzly/merge/{reference}/{project}/transcripts_with_fusions.idx",
         fastq=get_fastqs
     output:
-        "results/requant/{reference}/{sample}/{project}/abundance.h5",
-        "results/requant/{reference}/{sample}/{project}/abundance.tsv",
-        "results/requant/{reference}/{sample}/{project}/run_info.json"
+        "kallisto/requant/{reference}/{sample}/{project}/abundance.h5",
+        "kallisto/requant/{reference}/{sample}/{project}/abundance.tsv",
+        "kallisto/requant/{reference}/{sample}/{project}/run_info.json"
     log: 
-        "logs/requant/{reference}/{project}/{sample}.log"
+        "logs/kallisto/requant/{reference}/{project}/{sample}.log"
     resources:
         time=240, #minutes
         mem_mb=32000
     threads: config['kallisto']['threads']
     params:
-        outdir="results/requant/{reference}/{sample}/{project}",
+        outdir="kallisto/requant/{reference}/{sample}/{project}",
         b=config['kallisto']['bootstrap']
     envmodules:
         config["envmodules"]["kallisto"]

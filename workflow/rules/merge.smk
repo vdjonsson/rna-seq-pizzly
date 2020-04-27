@@ -2,11 +2,11 @@ localrules: cat_fasta, unique_fasta, count_fasta, fusions_t2g
 
 rule cat_fasta:
     input:
-        expand("results/pizzly/{ref}/{sample}/output.fusions.fasta", 
-            ref=REFERENCE, sample=samples['sample'])
+        expand("pizzly/fusion/{reference}/{sample}/output.fusions.fasta", 
+            reference=REFERENCE, sample=samples['sample'])
     output:
-        metadata="results/merge/{reference}/{project}/samples.txt",
-        fa="results/merge/{reference}/{project}/output.fusions.combined.fasta"
+        metadata="pizzly/merge/{reference}/{project}/samples.txt",
+        fa="pizzly/merge/{reference}/{project}/output.fusions.combined.fasta"
     resources:
         time=120,
         mem_mb=8000
@@ -23,9 +23,9 @@ rule cat_fasta:
     
 rule unique_fasta:
     input:
-        "results/merge/{reference}/{project}/{prefix}.fasta"
+        "pizzly/merge/{reference}/{project}/{prefix}.fasta"
     output:
-        "results/merge/{reference}/{project}/{prefix}.unique.fasta"
+        "pizzly/merge/{reference}/{project}/{prefix}.unique.fasta"
     resources:
         time=120, #minutes
         mem_mb=8000
@@ -34,11 +34,11 @@ rule unique_fasta:
 
 rule count_fasta:
     input:
-        raw="results/merge/{reference}/{project}/output.fusions.combined.fasta",
-        unique="results/merge/{reference}/{project}/output.fusions.combined.unique.fasta",
-        filtered="results/merge/{reference}/{project}/output.fusions.combined.unique.filtered.fasta"
+        raw="pizzly/merge/{reference}/{project}/output.fusions.combined.fasta",
+        unique="pizzly/merge/{reference}/{project}/output.fusions.combined.unique.fasta",
+        filtered="pizzly/merge/{reference}/{project}/output.fusions.combined.unique.filtered.fasta"
     output:
-        "results/merge/{reference}/{project}/summary.txt"
+        "pizzly/merge/{reference}/{project}/summary.txt"
     shell:
         """        
         echo "Raw  {input.raw}:" > {output} 
@@ -69,14 +69,14 @@ rule parse_gtf:
     script:
         "../scripts/parse_gtf.py"
         
-rule renamed_fusions:
+rule fusions_t2g:
     input:
         t2g=T2G,
-        fusions="results/merge/{reference}/{project}/output.fusions.combined.unique.fasta"
+        fusions="pizzly/merge/{reference}/{project}/output.fusions.combined.unique.fasta"
     output:
-        fusions_t2g="results/merge/{reference}/{project}/fusions_t2g.tsv",
-        combined_t2g="results/merge/{reference}/{project}/combined_t2g.tsv",
-        filtered_fusions="results/merge/{reference}/{project}/output.fusions.combined.unique.filtered.fasta"
+        fusions_t2g="pizzly/merge/{reference}/{project}/fusions_t2g.tsv",
+        combined_t2g="pizzlys/merge/{reference}/{project}/combined_t2g.tsv",
+        filtered_fusions="pizzly/merge/{reference}/{project}/output.fusions.combined.unique.filtered.fasta"
     # add pickle and pandas requirement
     script:
         "../scripts/fusions_t2g.py"

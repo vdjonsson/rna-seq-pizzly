@@ -3,7 +3,7 @@ rule index:
     input: FASTA
     output: INDEX
     log:
-        "logs/quant/{params.reference}/index.log"
+        "logs/kallisto/quant/{params.reference}/index.log"
     params:
         reference=REFERENCE,
         k=config['kallisto']['k']
@@ -17,18 +17,19 @@ rule kallisto_quant:
         idx=INDEX,
         fastq=get_fastqs
     output:
-        "results/quant/{reference}/{sample}/abundance.h5",
-        "results/quant/{reference}/{sample}/abundance.tsv",
-        "results/quant/{reference}/{sample}/run_info.json",
-        "results/quant/{reference}/{sample}/fusion.txt"
+        "kallisto/quant/{reference}/{sample}/abundance.h5",
+        "kallisto/quant/{reference}/{sample}/abundance.tsv",
+        "kallisto/quant/{reference}/{sample}/run_info.json",
+        "kallisto/quant/{reference}/{sample}/fusion.txt"
     log: 
-        "logs/quant/{reference}/{sample}.log"
+        "logs/kallisto/quant/{reference}/{sample}.log"
     resources:
         time=60, #minutes
         mem_mb=32000
     threads: config['kallisto']['threads']
     params:
-        outdir="results/kallisto/{reference}/{sample}/quant"
+        outdir="kallisto/quant/{reference}/{sample}",
+        b=config['kallisto']['bootstrap']
     envmodules:
         config["envmodules"]["kallisto"]
     shell:
@@ -37,4 +38,5 @@ rule kallisto_quant:
         "-o {params.outdir} "
         "--fusion "
         "-t {threads} "
+        "-b {params.b} "
         "{input.fastq} 2> {log}"
