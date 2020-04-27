@@ -75,7 +75,7 @@ rule fusions_t2g:
         fusions="pizzly/merge/{reference}/{project}/output.fusions.combined.unique.fasta"
     output:
         fusions_t2g="pizzly/merge/{reference}/{project}/fusions_t2g.tsv",
-        combined_t2g="pizzlys/merge/{reference}/{project}/combined_t2g.tsv",
+        combined_t2g="pizzly/merge/{reference}/{project}/combined_t2g.tsv",
         filtered_fusions="pizzly/merge/{reference}/{project}/output.fusions.combined.unique.filtered.fasta"
     # add pickle and pandas requirement
     script:

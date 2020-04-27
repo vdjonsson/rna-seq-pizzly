@@ -7,6 +7,7 @@ kallisto_index:
   output: !join [*root, "kallisto/quant/{params.reference}/index_%j.log"]
   
 kallisto_quant:
+  partition: "all,fast"
   output: !join [*root, "kallisto/quant/{wildcards.reference}/{wildcards.sample}_%j.log"]
 
 pizzly:

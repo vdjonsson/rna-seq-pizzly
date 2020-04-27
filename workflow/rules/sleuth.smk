@@ -1,5 +1,5 @@
 
-kallisto_output = expand("results/requant/{reference}/{sample}/{project}", 
+kallisto_output = expand("kallisto/requant/{reference}/{sample}/{project}/abundance.h5", 
     reference=REFERENCE, sample=samples['sample'], project=PROJECT)
 
 localrules: compose_sample_sheet
@@ -11,7 +11,7 @@ rule compose_sample_sheet:
         "sleuth/{reference}/{project}/samplesheet.tsv"
     run:
         samples_ = samples.copy()
-        samples_['path'] =  kallisto_output
+        samples_['path'] = [s.replace("/abundance.h5", "") for s in kallisto_output]
         samples_.to_csv(output[0], sep="\t", index=False)
 
 def get_model(wildcards):
@@ -21,8 +21,7 @@ def get_model(wildcards):
 
 rule check_h5:
     input: 
-        expand("kallisto/requant/{reference}/{sample}/{project}/abundance.h5", 
-            reference=REFERENCE, sample=samples['sample'], project=PROJECT),
+        kallisto_output,
         samples="sleuth/{reference}/{project}/samplesheet.tsv"
     output:
         "sleuth/{reference}/{project}/h5_status.txt"
